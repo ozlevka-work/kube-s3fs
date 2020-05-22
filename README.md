@@ -28,11 +28,6 @@ Generally S3 cannot offer the same performance or semantics as a local file syst
 You need to have a Kubernetes cluster, and the kubectl command-line tool must be configured to communicate with 
 your cluster. If you do not already have a cluster, you can create one by using the [Gardener](https://gardener.kubernetes.sap.corp/login).
 
-Ensure that you have create the "imagePullSecret" in your cluster.
-```sh 
-kubectl create secret docker-registry artifactory --docker-server=<YOUR-REGISTRY>.docker.repositories.sap.ondemand.com --docker-username=<USERNAME> --docker-password=<PASSWORD> --docker-email=<EMAIL> -n <NAMESPACE>
-```
-
 ## Setup
 The first step is to clone this repository. Next is the Secret for the AWS API credentials of the user that has 
 full access to our S3 bucket. Copy the `configmap_secrets_template.yaml` to `configmap_secrets.yaml` and place 
@@ -47,6 +42,8 @@ data:
   S3_BUCKET: <YOUR-S3-BUCKET-NAME>
   AWS_KEY: <YOUR-AWS-TECH-USER-ACCESS-KEY>
   AWS_SECRET_KEY: <YOUR-AWS-TECH-USER-SECRET>
+  S3_REGION: <YOUR-S3-REGION>
+  S3_URL: <YOUR-S3-URL>
 ```
 
 ## Build and deploy
@@ -59,11 +56,6 @@ Change the settings in the `build.sh` file with your docker registry settings.
 # PREREQUISTITS
 ########################################################################################################################
 #
-# - ensure that you have a valid Artifactory or other Docker registry account
-# - Create your image pull secret in your namespace
-#   kubectl create secret docker-registry artifactory --docker-server=<YOUR-REGISTRY>.docker.repositories.sap.ondemand.com --docker-username=<USERNAME> --docker-password=<PASSWORD> --docker-email=<EMAIL> -n <NAMESPACE>
-# - change the settings below arcording your settings
-#
 # usage:
 # Call this script with the version to build and push to the registry. After build/push the
 # yaml/* files are deployed into your cluster
@@ -71,8 +63,8 @@ Change the settings in the `build.sh` file with your docker registry settings.
 #  ./build.sh 1.0
 #
 VERSION=$1
-PROJECT=kube-s3
-REPOSITORY=cp-enablement.docker.repositories.sap.ondemand.com
+PROJECT=kube-s3fs
+REPOSITORY=nuclearis
 
 
 # causes the shell to exit if any subcommand or pipeline returns a non-zero status.

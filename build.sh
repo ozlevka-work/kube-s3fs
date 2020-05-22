@@ -4,11 +4,6 @@
 # PREREQUISTITS
 ########################################################################################################################
 #
-# - ensure that you have a valid Artifactory or other Docker registry account
-# - Create your image pull secret in your namespace
-#   kubectl create secret docker-registry artifactory --docker-server=<YOUR-REGISTRY>.docker.repositories.sap.ondemand.com --docker-username=<USERNAME> --docker-password=<PASSWORD> --docker-email=<EMAIL> -n <NAMESPACE>
-# - change the settings below arcording your settings
-#
 # usage:
 # Call this script with the version to build and push to the registry. After build/push the
 # yaml/* files are deployed into your cluster
@@ -16,8 +11,8 @@
 #  ./build.sh 1.0
 #
 VERSION=$1
-PROJECT=kube-s3
-REPOSITORY=cp-enablement.docker.repositories.sap.ondemand.com
+PROJECT=kube-s3fs
+REPOSITORY=nuclearis
 
 
 # causes the shell to exit if any subcommand or pipeline returns a non-zero status.
@@ -32,19 +27,19 @@ set -e
 #
 echo '>>> Building new image'
 # Due to a bug in Docker we need to analyse the log to find out if build passed (see https://github.com/dotcloud/docker/issues/1875)
-#docker build --no-cache=true -t $REPOSITORY/$PROJECT:$VERSION . | tee /tmp/docker_build_result.log
-#RESULT=$(cat /tmp/docker_build_result.log | tail -n 1)
-#if [[ "$RESULT" != *Successfully* ]];
-#then
-#  exit -1
-#fi
+docker build --no-cache=true -t $REPOSITORY/$PROJECT:$VERSION . | tee /tmp/docker_build_result.log
+RESULT=$(cat /tmp/docker_build_result.log | tail -n 1)
+if [[ "$RESULT" != *Successfully* ]];
+then
+  exit -1
+fi
 
 ########################################################################################################################
 # push the docker image to your registry
 ########################################################################################################################
 #
 echo '>>> Push new image'
-#docker push $REPOSITORY/$PROJECT:$VERSION
+docker push $REPOSITORY/$PROJECT:$VERSION
 
 
 ########################################################################################################################

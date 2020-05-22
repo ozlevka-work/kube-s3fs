@@ -1,18 +1,22 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   labels:
-    app: s3-provider
+    name: s3-provider
   name: s3-provider
+  namespace: default
 spec:
+  selector:
+    matchLabels:
+      name: s3-provider  
   template:
     metadata:
       labels:
-        app: s3-provider
+        name: s3-provider
     spec:
       containers:
       - name: s3fuse
-        image: cp-enablement.docker.repositories.sap.ondemand.com/kube-s3
+        image: nuclearis/kube-s3fs
         securityContext:
           privileged: true
         # use ALL  entries in the config map as environment variables
@@ -24,8 +28,6 @@ spec:
           mountPath: /dev/fuse
         - name: mntdatas3fs
           mountPath: /var/s3:shared
-      imagePullSecrets:
-      - name: artifactory
       volumes:
       - name: devfuse
         hostPath:
