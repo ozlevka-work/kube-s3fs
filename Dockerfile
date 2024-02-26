@@ -7,7 +7,7 @@ FROM alpine:3.19.1
 ENV MNT_POINT /var/s3
 ENV S3_REGION ''
 
-ARG S3FS_VERSION=v1.86
+ARG S3FS_VERSION=v1.94
 
 RUN apk --update --no-cache add fuse alpine-sdk automake autoconf libxml2-dev fuse-dev curl-dev git bash; \
     git clone https://github.com/s3fs-fuse/s3fs-fuse.git; \
