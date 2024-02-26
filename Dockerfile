@@ -2,7 +2,7 @@
 # The FUSE driver needs elevated privileges, run Docker with --privileged=true
 ###############################################################################
 
-FROM alpine:3.3
+FROM alpine:3.19.1
 
 ENV MNT_POINT /var/s3
 ENV S3_REGION ''
